@@ -219,6 +219,27 @@ describe Tweet::Parser do
 
   end
 
+  context "screen_name contains number" do
+
+
+    contents = [
+      "@person123 1 beer #tippercoin",
+      "@person123 1 usd #tippercoin",
+      "@person123 1 BTC #tippercoin",
+      "@person123 1 bitcoin #tippercoin",
+      "@person123 1 internet #tippercoin",
+    ]
+
+    contents.each_with_index do |c, index|
+      it "#{index}" do
+        t = Tweet::Parser.new(c, "sender")
+        ap t
+        # Should be take 123 and try to satoshify that
+        expect(t.info[:amount]).to_not eq(nil)
+      end
+    end
+  end
+
 end
 
 describe 'Tweet::Parser Bulk Check' do

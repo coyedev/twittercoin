@@ -20,7 +20,7 @@ module Tweet::Extractor
     SYMBOLS = [
       {
         name: :mBTC_SUFFIX,
-        regex: /(\d*.?\d*)\s?mBTC/i,
+        regex: /\s(\d*.?\d*)\s?mBTC/i,
         satoshify: Proc.new {|n| (n.to_f * SATOSHIS / MILLIBIT).to_i }
       },
       {
@@ -30,12 +30,12 @@ module Tweet::Extractor
       },
       {
         name: :BTC_SUFFIX,
-        regex: /(\d*.?\d*)\s?BTC/i,
+        regex: /\s(\d*.?\d*)\s?BTC/i,
         satoshify: Proc.new {|n| (n.to_f * SATOSHIS).to_i}
       },
       {
         name: :bitcoin_SUFFIX,
-        regex: /(\d*.?\d*)\s?bitcoin/i,
+        regex: /\s(\d*.?\d*)\s?bitcoin/i,
         satoshify: Proc.new {|n| (n.to_f * SATOSHIS).to_i}
       },
       {
@@ -50,12 +50,12 @@ module Tweet::Extractor
       },
       {
         name: :USD,
-        regex: /(\d*.?\d*)\s?USD/i,
+        regex: /\s(\d*.?\d*)\s?USD/i,
         satoshify: Proc.new {|n| (n.to_f / Mtgox.latest * SATOSHIS).to_i }
       },
       {
         name: :dollar,
-        regex: /(\d*.?\d*)\s?dollar/i,
+        regex: /\s(\d*.?\d*)\s?dollar/i,
         satoshify: Proc.new {|n| (n.to_f / Mtgox.latest * SATOSHIS).to_i }
       },
       {
@@ -65,12 +65,12 @@ module Tweet::Extractor
       },
       {
         name: :beer,
-        regex: /(\d*.?\d*)\s?beer/i,
+        regex: /\s(\d*.?\d*)\s?beer/i,
         satoshify: Proc.new {|n| (n.to_f * 4 / Mtgox.latest * SATOSHIS).to_i }
       },
       {
         name: :internet,
-        regex: /(\d*.?\d*)\s?internet/i,
+        regex: /\s(\d*.?\d*)\s?internet/i,
         satoshify: Proc.new {|n| (n.to_f * 1.337 / Mtgox.latest * SATOSHIS).to_i }
       }
     ]
