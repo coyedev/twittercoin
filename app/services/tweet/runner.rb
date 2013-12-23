@@ -3,7 +3,7 @@ module Tweet::Runner
 
   def execute(content: nil, sender: nil, status_id: nil)
     return if sender =~ /tippercoin/i
-    return if content[0..2] == "RT " # Return if Retweet
+    return ap "Retweet ... " if content[0..2] == "RT " # Return if Retweet
 
 
     ap 'handling ...'
