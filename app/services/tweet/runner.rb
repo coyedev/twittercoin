@@ -1,9 +1,11 @@
 module Tweet::Runner
   extend self
 
+  RETWEET = /(^|\s)RT\s/
+
   def execute(content: nil, sender: nil, status_id: nil)
     return if sender =~ /tippercoin/i
-    return ap "Retweet ... " if content[0..2] == "RT " # Return if Retweet
+    return ap "Retweet ... " if content =~ RETWEET
 
 
     ap 'handling ...'
