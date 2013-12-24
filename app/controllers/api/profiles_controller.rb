@@ -20,7 +20,8 @@ class Api::ProfilesController < ActionController::Base
       t = Tweet::Parser.new(tip.content, tip.screen_name)
 
       # Count tips
-      giving = tip.sender.screen_name == params["screen_name"]
+      #
+      giving = tip.sender.screen_name == @user.screen_name
       total_satoshis_given += tip.satoshis if giving
       total_satoshis_received += tip.satoshis if !giving
 
