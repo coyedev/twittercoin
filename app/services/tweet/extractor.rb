@@ -76,30 +76,32 @@ module Tweet::Extractor
     ]
 
     # Accept: String
-    # Returns: Array of Integers, or nil
+    # Returns: Hash
     def parse(content)
-
-      # Parse all and loop until first symbol is valid
-      # See order at top
       parse_all(content).each do |p|
-        values = p.values.flatten
-        return values if !values.empty?
+        return p[0] if !p.blank? && !p[0][:satoshis].nil?
       end
 
-      # Return nil if nothing is found
-      return [nil]
+      return {
+        satoshis: nil,
+        units: nil,
+        symbol: nil
+      }
     end
 
     # Accept: String
-    # Returns: Array of hashes, hash has key and array
+    # Returns: Array of arrays
     def parse_all(content)
       SYMBOLS.map do |sym|
         raw = content.scan(sym[:regex]).flatten
-        {
-          sym[:name] => raw.map do |r|
-            sym[:satoshify].call(r) if r.is_number?
-          end.compact
-        }
+        raw.map do |r|
+          satoshis = sym[:satoshify].call(r) if r.is_number?
+          {
+            satoshis: satoshis,
+            units: r.strip.to_f,
+            symbol: sym[:name]
+          }
+        end
       end
     end
 

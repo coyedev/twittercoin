@@ -1,25 +1,29 @@
 class Tweet::Parser
 
-  attr_accessor :content, :sender, :info, :mentions, :amounts
+  attr_accessor :content, :sender, :info, :mentions, :amount,
+  :satoshis, :units, :symbol, :recipient
 
   BOT = "tippercoin"
 
   def initialize(content, sender)
     @content = content
     @sender = sender
-    @mentions = Tweet::Extractor::Mentions.parse(@content)
-    @amounts = Tweet::Extractor::Amounts.parse(@content)
 
-    @info = {
-      recipient: @mentions.first,
-      amount: @amounts.first,
-      sender: @sender
-    }
+    @mentions = Tweet::Extractor::Mentions.parse(@content)
+    @amount = Tweet::Extractor::Amounts.parse(@content)
+
+    @recipient = @mentions.first
+    @satoshis = @amount[:satoshis]
+    @units = @amount[:units]
+    @symbol = @amount[:symbol]
   end
 
   def valid?
     return false if direct_tweet?
-    return false if !(@info.values & [nil, 0]).empty?
+    return false if @recipient.blank?
+    return false if @satoshis.blank? || @satoshis.zero?
+    return false if @units.blank?
+    return false if @symbol.blank?
     return false if @sender == BOT
 
     return true

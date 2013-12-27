@@ -11,8 +11,8 @@ class Tweet::Handler
     @status_id = status_id
     @reply_id = status_id
     @parsed_tweet = Tweet::Parser.new(@content, @sender)
-    @satoshis = @parsed_tweet.info[:amount]
-    @recipient = @parsed_tweet.info[:recipient]
+    @satoshis = @parsed_tweet.satoshis
+    @recipient = @parsed_tweet.recipient
     @valid = false
     @sender_user = User.find_profile(@sender) || User.create_profile(@sender)
     @recipient_user = User.find_profile(@recipient) || User.create_profile(@recipient)

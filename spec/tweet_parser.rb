@@ -12,8 +12,8 @@ describe Tweet::Parser do
   context "Basic: " do
 
     before(:each) do
-      @content = "@recipient, really good article, keep it up! Here's a tip 0.001 BTC @tippercoin"
-      @t = Tweet::Parser.new(@content, sender)
+      content = "@recipient, really good article, keep it up! Here's a tip 0.001 BTC @tippercoin"
+      @t = Tweet::Parser.new(content, sender)
     end
 
     it "should return the correct bot(tippercoin)" do
@@ -21,29 +21,24 @@ describe Tweet::Parser do
     end
 
     it "should not return recipient to be @tippercoin" do
-      expect(@t.info[:recipient]).to_not be("tippercoin")
+      expect(@t.recipient).to_not be("tippercoin")
     end
 
     it "should return mentions as array" do
       expect(@t.mentions.class).to be(Array)
     end
 
-    it "should return amounts as array" do
-      expect(@t.amounts.class).to be(Array)
-    end
-
-    it "should build an info hash" do
-      expect(@t.info.class).to be(Hash)
-      expect(@t.info.keys).to include(:recipient, :amount, :sender)
+    it "should return amount as hash" do
+      expect(@t.amount.class).to be(Hash)
     end
 
     it "should return the correct sender" do
-      expect(@t.info[:sender]).to eq("sender")
+      expect(@t.sender).to eq("sender")
     end
 
     it "should return the correct value" do
       amount = 100000
-      expect(@t.info[:amount]).to eq(amount)
+      expect(@t.satoshis).to eq(amount)
     end
 
   end
@@ -51,9 +46,9 @@ describe Tweet::Parser do
   context "Multiple Recipients OR Amounts: " do
 
     before(:each) do
-      @content = "@recipient1, @recipient2, really good article, keep it up!
+      content = "@recipient1, @recipient2, really good article, keep it up!
       Here's a tip 0.001 BTC but not 1 BTC @tippercoin"
-      @t = Tweet::Parser.new(@content, sender)
+      @t = Tweet::Parser.new(content, sender)
     end
 
     it "should identify multiple recipients" do
@@ -61,13 +56,12 @@ describe Tweet::Parser do
     end
 
     it "should take the first recipient to be the real recipient" do
-      expect(@t.info[:recipient]).to eq("recipient1")
-      expect(@t.info[:recipient]).to_not eq("recipient2")
+      expect(@t.recipient).to eq("recipient1")
+      expect(@t.recipient).to_not eq("recipient2")
     end
 
     it "should take the first amount to be the real amount" do
-      expect(@t.info[:amount]).to be(100_000)
-      expect(@t.amounts).to include(100_000_000)
+      expect(@t.satoshis).to be(100_000)
     end
   end
 
@@ -90,7 +84,7 @@ describe Tweet::Parser do
       content = "@recipient1 really good article, keep it up! Here's a tip 0.000 BTC @tippercoin"
       t = Tweet::Parser.new(content, sender)
       expect(t.valid?).to eq(false)
-      expect(t.info[:amount]).to eq(0)
+      expect(t.satoshis).to eq(0)
     end
 
     it "should be invalid if sender is @tippercoin" do
@@ -112,24 +106,24 @@ describe Tweet::Parser do
       content1 = "@recipient, really good article, keep it up! Here's a tip 0.041 BTC @tippercoin"
       # value = 0.041 * 100_000_000
       t1 = Tweet::Parser.new(content1, sender)
-      expect(t1.info[:amount]).to eq(4_100_000)
+      expect(t1.satoshis).to eq(4_100_000)
 
       content2 = "@recipient, really good article, keep it up! Here's a tip 2 BTC @tippercoin"
       t2 = Tweet::Parser.new(content2, sender)
-      expect(t2.info[:amount]).to eq(200_000_000)
+      expect(t2.satoshis).to eq(200_000_000)
     end
 
     it "should extract/convert bitcoin in SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's 0.01 Bitcoins @tippercoin"
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(1_000_000)
+      expect(t.satoshis).to eq(1_000_000)
     end
 
     it "should extract/convert mBTC to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 mBTC @tippercoin"
       t = Tweet::Parser.new(content, sender)
       # value = 5 * 100_000_000 / 1000
-      expect(t.info[:amount]).to eq(500_000)
+      expect(t.satoshis).to eq(500_000)
     end
 
     it "should extract/convert USD to SATOSHIS" do
@@ -137,7 +131,7 @@ describe Tweet::Parser do
 
       satoshis = ((5 / btc_usd) * SATOSHIS).to_i
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(satoshis)
+      expect(t.satoshis).to eq(satoshis)
     end
 
     it "should extract/convert dollars to SATOSHIS" do
@@ -145,7 +139,7 @@ describe Tweet::Parser do
 
       satoshis = ((5 / btc_usd) * SATOSHIS).to_i
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(satoshis)
+      expect(t.satoshis).to eq(satoshis)
     end
 
     it "should extract/convert beers to SATOSHIS" do
@@ -153,7 +147,7 @@ describe Tweet::Parser do
 
       satoshis = (((2 * beer) / btc_usd) * SATOSHIS).to_i
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(satoshis)
+      expect(t.satoshis).to eq(satoshis)
     end
 
     it "should extract/convert internets to SATOSHIS" do
@@ -161,7 +155,7 @@ describe Tweet::Parser do
 
       satoshis = (((5 * internet) / btc_usd) * SATOSHIS).to_i
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(satoshis)
+      expect(t.satoshis).to eq(satoshis)
     end
 
     it "should extract both upper/lowercases of suffix symbols" do
@@ -171,15 +165,15 @@ describe Tweet::Parser do
       content2 = "@recipient, really good article, keep it up! Here's a tip 0.041 btc @tippercoin"
       t2 = Tweet::Parser.new(content2, sender)
 
-      expect(t1.info[:amount]).to eq(4_100_000)
-      expect(t2.info[:amount]).to eq(4_100_000)
+      expect(t1.satoshis).to eq(4_100_000)
+      expect(t2.satoshis).to eq(4_100_000)
     end
 
     it "should prefer suffix btc/BTC if multiple currency symbols" do
       content = "@recipient, really good article, keep it up! Here's a tip $ 0.01 BTC @tippercoin"
 
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(1_000_000)
+      expect(t.satoshis).to eq(1_000_000)
     end
 
   end
@@ -188,11 +182,11 @@ describe Tweet::Parser do
     it "should extract/convert ฿ to SATOSHIS" do
       content1 = "@recipient, really good article, keep it up! Here's a tip ฿0.041 @tippercoin"
       t1 = Tweet::Parser.new(content1, sender)
-      expect(t1.info[:amount]).to eq(4_100_000)
+      expect(t1.satoshis).to eq(4_100_000)
 
       content2 = "@recipient, really good article, keep it up! Here's a tip ฿2 @tippercoin"
       t2 = Tweet::Parser.new(content2, sender)
-      expect(t2.info[:amount]).to eq(200_000_000)
+      expect(t2.satoshis).to eq(200_000_000)
     end
 
     it "should extract/convert $ to SATOSHIS" do
@@ -200,25 +194,41 @@ describe Tweet::Parser do
 
       satoshis = ((3  / btc_usd) * SATOSHIS).to_i
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(satoshis)
+      expect(t.satoshis).to eq(satoshis)
     end
 
     it "should extract/convert when BTC is prefixed" do
       content1 = "@recipient, really good article, keep it up! Here's a tip BTC 0.01 @tippercoin"
       t1 = Tweet::Parser.new(content1, sender)
-      expect(t1.info[:amount]).to eq(1_000_000)
+      expect(t1.satoshis).to eq(1_000_000)
 
       content2 = "@recipient, really good article, keep it up! Here's a tip mBTC8 @tippercoin"
       t2 = Tweet::Parser.new(content2, sender)
-      expect(t2.info[:amount]).to eq(800_000)
+      expect(t2.satoshis).to eq(800_000)
     end
 
     it "should prefer prefix btc/BTC over other multiple currency symbols" do
       content = "@recipient, really good article, keep it up! Here's a tip BTC 0.01 USD @tippercoin"
 
       t = Tweet::Parser.new(content, sender)
-      expect(t.info[:amount]).to eq(1_000_000)
+      expect(t.satoshis).to eq(1_000_000)
 
+    end
+
+  end
+
+  context "Raw values" do
+    before(:each) do
+      content = "@person have 1 beer #tippercoin"
+      @t = Tweet::Parser.new(content, sender)
+    end
+
+    it "should return unit 1 " do
+      expect(@t.units).to eq(1.0)
+    end
+
+    it "should return symbol beer" do
+      expect(@t.symbol).to eq(:beer)
     end
 
   end
@@ -236,8 +246,8 @@ describe Tweet::Parser do
     contents.each_with_index do |c, index|
       it "content: #{index}" do
         t = Tweet::Parser.new(c, "sender")
-        # TODO: expect(t.info[:amount]).to eq(something)
-        expect(t.info[:amount]).to_not eq(nil)
+        # TODO: expect(t.satoshis).to eq(something)
+        expect(t.satoshis).to_not eq(nil)
       end
     end
   end
@@ -261,7 +271,7 @@ describe 'Tweet::Parser Bulk Check' do
     TWEETS.each_with_index do |content, index|
       it "line num: #{index}" do
         t = Tweet::Parser.new(content, sender)
-        expect(t.info[:amount]).to eq(satoshis)
+        expect(t.satoshis).to eq(satoshis)
       end
     end
   end

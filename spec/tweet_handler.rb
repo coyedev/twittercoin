@@ -28,9 +28,8 @@ describe Tweet::Handler, :vcr do
       expect(@handler.status_id).to eq(status_id)
     end
 
-    it "should parse the tweet" do
-      expect(@handler.parsed_tweet.info).to eq(info)
-      expect(@handler.recipient).to eq('JimmyMcTester')
+    it "should set recipient from parsed tweet" do
+      expect(@handler.recipient).to eq("JimmyMcTester")
     end
 
     it "should set satoshis from parsed tweet" do
@@ -192,6 +191,7 @@ describe Tweet::Handler, :vcr do
           status_id: status_id)
 
         handler.check_validity
+        p handler
         expect(handler.valid).to eq(true)
 
         handler.reply_build
