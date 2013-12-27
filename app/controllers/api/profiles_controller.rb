@@ -17,15 +17,24 @@ class Api::ProfilesController < ActionController::Base
       sender = TipperClient.search_user(tip.sender.screen_name)
       recipient = TipperClient.search_user(tip.recipient.screen_name)
 
-      t = Tweet::Parser.new(tip.content, tip.screen_name)
-
       # Count tips
-      #
       giving = tip.sender.screen_name == @user.screen_name
       total_satoshis_given += tip.satoshis if giving
       total_satoshis_received += tip.satoshis if !giving
 
-
+      # Other
+      t = Tweet::Parser.new(tip.content, tip.screen_name)
+      other = if [:beer, :internet].include?(t.symbol)
+        {
+          presence: true,
+          units: t.units,
+          symbol: t.units > 1 ? t.symbol.to_s.pluralize : t.symbol.to_s
+        }
+      else
+        {
+          presence: false
+        }
+      end
 
       {
         sender: {
@@ -42,11 +51,7 @@ class Api::ProfilesController < ActionController::Base
         txHash: tip.tx_hash,
         tweetLink: tip.build_link,
         amount: tip.satoshis / SATOSHIS.to_f,
-        other: {
-          presence: false,
-          amount: nil,
-          unit: nil
-        }
+        other: other
       }
     end
 
