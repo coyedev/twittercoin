@@ -176,7 +176,7 @@ describe Tweet::Handler, :vcr do
         handler.check_validity
         handler.reply_build
         expect(handler.valid).to eq(false)
-        expect(handler.reply).to include("forget", "BTC")
+        expect(handler.reply).to include("apologies", "cannot")
       end
 
       it "should, otherwise, build a generic error message" do
