@@ -111,7 +111,7 @@ describe Tweet::Handler, :vcr do
       end
 
       it "should, if direct tweet, build the error message" do
-        content = "@tippercoin, 1 BTC, @otherdude"
+        content = "@tippercoin, hey what's going with this shiz man? #tippercoin"
         handler = Tweet::Handler.new(
           content: content,
           sender: sender,
@@ -120,10 +120,12 @@ describe Tweet::Handler, :vcr do
         handler.check_validity
         handler.reply_build
         expect(handler.valid).to eq(false)
-        expect(handler.reply).to include('someone', 'else', sender)
+        expect(handler.reply).to include('bot', 'human', sender)
       end
 
       it "should, if not enough balance, build the error message" do
+        User.any_instance.stub(:enough_balance?).and_return(false)
+
         content = "@JimmyMcTester, 1 BTC, @tippercoin"
         handler = Tweet::Handler.new(
           content: content,
@@ -136,7 +138,19 @@ describe Tweet::Handler, :vcr do
         expect(handler.reply).to include("top", "up")
       end
 
-      # TODO: Mock to have enough_balance?
+      it "should, if general tweet, build the error message" do
+        content = "@JimmyMcTester, bitcoin is ma lyf yo dawg #tippercoin"
+        handler = Tweet::Handler.new(
+          content: content,
+          sender: sender,
+          status_id: status_id)
+
+        handler.check_validity
+        handler.reply_build
+        expect(handler.valid).to eq(false)
+        expect(handler.reply).to include("sorry", "meant")
+      end
+
       it "should, otherwise, build a generic error message" do
         content = "Does this actually work @tippercoin"
         handler = Tweet::Handler.new(
@@ -150,8 +164,10 @@ describe Tweet::Handler, :vcr do
         expect(handler.reply).to include("not", "meant")
       end
 
-      # TODO: Mock to have enough_balance?
       it "should build a valid recipient reply message" do
+        User.any_instance.stub(:enough_balance?).and_return(true)
+        User.any_instance.stub(:enough_confirmed_unspents?).and_return(true)
+
         content = "@JimmyMcTester, 0.001 BTC, @tippercoin"
         handler = Tweet::Handler.new(
           content: content,
@@ -165,7 +181,6 @@ describe Tweet::Handler, :vcr do
         expect(handler.reply).to include("@JimmyMcTester", "0.001", "tipped")
       end
 
-      # TODO: Mock to have enough_balance?
       it "should not include reply_id in reply if invalid" do
         content = "@JimmyMcTester, failure, @tippercoin"
         handler = Tweet::Handler.new(

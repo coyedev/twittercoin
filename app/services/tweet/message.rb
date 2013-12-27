@@ -23,9 +23,16 @@ module Tweet::Message
       "and make a deposit. Thanks! #{link}"
     end
 
-    def not_enough_balance(sender)
-      # TODO: Include link with amount
+    def direct_tweet(sender)
+      "@#{sender}, I'm just a bot, a humble servant bot. Please tweet @ScottyLi to talk to a human!"
+    end
 
+    def likely_missing_fee(sender)
+      "@#{sender}, don't forget the 0.0001 BTC miner fee!."
+    end
+
+    # TODO: Include link with amount
+    def not_enough_balance(sender)
       link = "www.tippercoin.com/auth/twitter?r=#{rand}"
       "@#{sender}, please top up on your account before sending this tip. #{link}"
     end
@@ -43,11 +50,6 @@ module Tweet::Message
     def zero_amount(sender)
       link = "www.tippercoin.com/#/how-it-works?r=#{rand}"
       "@#{sender}, please tip 0.001 BTC or more. Refer to #{link}"
-    end
-
-    def direct_tweet(sender)
-      link = "www.tippercoin.com/#/how-it-works?r=#{rand}"
-      "@#{sender}, please try tipping someone else. Refer to #{link}"
     end
 
     def unknown(sender)

@@ -38,6 +38,11 @@ class User < ActiveRecord::Base
     info["final_balance"]
   end
 
+  def send_includes_fee?(amount)
+    return false if amount.nil?
+    #
+  end
+
   def enough_balance?(amount)
     return false if amount.nil?
     get_balance >= amount + FEE

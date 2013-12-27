@@ -20,8 +20,13 @@ module Tweet::Runner
     ap 'checking validity ...'
     handler.check_validity
 
-    # Short Circuit if Invalid
+
     if !handler.valid
+      if handler.state == :unknown
+        ap 'invalid, and unknown, not replying ...'
+        return
+      end
+
       ap 'invalid, buildling/deliver reply ...'
       handler.reply_build
       handler.reply_deliver
