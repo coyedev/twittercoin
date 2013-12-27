@@ -124,6 +124,7 @@ describe Tweet::Handler, :vcr do
       end
 
       it "should, if not enough balance, build the error message" do
+        User.any_instance.stub(:likely_missing_fee?).and_return(false)
         User.any_instance.stub(:enough_balance?).and_return(false)
 
         content = "@JimmyMcTester, 1 BTC, @tippercoin"
@@ -136,6 +137,21 @@ describe Tweet::Handler, :vcr do
         handler.reply_build
         expect(handler.valid).to eq(false)
         expect(handler.reply).to include("top", "up")
+      end
+
+      it "should, if missing miner fee, build the error message" do
+        User.any_instance.stub(:likely_missing_fee?).and_return(true)
+
+        content = "@JimmyMcTester, 0.001 BTC, @tippercoin"
+        handler = Tweet::Handler.new(
+          content: content,
+          sender: sender,
+          status_id: status_id)
+
+        handler.check_validity
+        handler.reply_build
+        expect(handler.valid).to eq(false)
+        expect(handler.reply).to include("forget", "fee")
       end
 
       it "should, if general tweet, build the error message" do
@@ -165,6 +181,7 @@ describe Tweet::Handler, :vcr do
       end
 
       it "should build a valid recipient reply message" do
+        User.any_instance.stub(:likely_missing_fee?).and_return(false)
         User.any_instance.stub(:enough_balance?).and_return(true)
         User.any_instance.stub(:enough_confirmed_unspents?).and_return(true)
 

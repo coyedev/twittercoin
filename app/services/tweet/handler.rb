@@ -37,6 +37,7 @@ class Tweet::Handler
     return @state = :zero_amount if @satoshis && @satoshis.zero?
     return @state = :negative_amount if @satoshis && @satoshis < 0
     return @state = :unknown if !@parsed_tweet.valid? # Other Unknown Error
+    return @state = :likely_missing_fee if @sender_user.likely_missing_fee?(@satoshis)
     return @state = :not_enough_balance if !@sender_user.enough_balance?(@satoshis)
 
     # we should have confirmed that there is enough balance now

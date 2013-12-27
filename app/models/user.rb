@@ -38,9 +38,15 @@ class User < ActiveRecord::Base
     info["final_balance"]
   end
 
-  def send_includes_fee?(amount)
+  def likely_missing_fee?(amount)
     return false if amount.nil?
-    #
+
+    balance = get_balance
+    difference = balance - amount
+
+    return true if difference >= 0 && difference < FEE
+    return false
+
   end
 
   def enough_balance?(amount)
