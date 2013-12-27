@@ -79,7 +79,11 @@ module Tweet::Extractor
     # Returns: Hash
     def parse(content)
       parse_all(content).each do |p|
-        return p[0] if !p.blank? && !p[0][:satoshis].nil?
+        next if p.blank?
+
+        p.each do |x|
+          return x unless x[:satoshis].nil?
+        end
       end
 
       return {
