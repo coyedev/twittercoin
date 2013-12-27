@@ -28,7 +28,7 @@ module Tweet::Message
     end
 
     def likely_missing_fee(sender)
-      "@#{sender}, don't forget the 0.0001 BTC miner fee!"
+      "@#{sender}, oops, please lower your amount by 0.0001 BTC so we can cover mining fees. Or, top up your account :)"
     end
 
     # TODO: Include link with amount

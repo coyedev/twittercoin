@@ -151,7 +151,7 @@ describe Tweet::Handler, :vcr do
         handler.check_validity
         handler.reply_build
         expect(handler.valid).to eq(false)
-        expect(handler.reply).to include("forget", "fee")
+        expect(handler.reply).to include("mining", "fees")
       end
 
       it "should, if general tweet, build the error message" do
