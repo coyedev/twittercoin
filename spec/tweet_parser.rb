@@ -70,6 +70,7 @@ describe Tweet::Parser do
       content = "@recipient does this btc thing actually work? @tippercoin"
       t = Tweet::Parser.new(content, sender)
       expect(t.valid?).to eq(false)
+      expect(t.likely_forgot_symbol?).to eq(false)
     end
 
     it "should be invalid if BOT is specified as first recipient" do
@@ -92,6 +93,18 @@ describe Tweet::Parser do
       sender = "tippercoin"
       t = Tweet::Parser.new(content, sender)
       expect(t.valid?).to eq(false)
+    end
+
+    it "should be invalid if sender is @tippercoin" do
+      content = "@pmarreck Tip 0.0019 @tippercoin"
+      content2 = "@djmsg Yo son, catch some coin! .001 #tippercoin"
+      sender = "tippercoin"
+      t = Tweet::Parser.new(content, sender)
+      t2 = Tweet::Parser.new(content2, sender)
+      expect(t.valid?).to eq(false)
+      expect(t.likely_forgot_symbol?).to eq(true)
+      expect(t2.valid?).to eq(false)
+      expect(t2.likely_forgot_symbol?).to eq(true)
     end
 
   end

@@ -28,7 +28,12 @@ module Tweet::Message
     end
 
     def likely_missing_fee(sender)
-      "@#{sender}, oops, please lower your amount by 0.0001 BTC so we can cover mining fees. Or, top up your account :)"
+      "@#{sender}, oops, please lower your amount by 0.0001 BTC so we can cover miner fees. Or, top up your account :)"
+    end
+
+    def likely_forgot_symbol(sender)
+      link = "www.tippercoin.com/#/how-it-works?r=#{rand}"
+      "@#{sender}, apologies human, I cannot compute your tweet :( Please see #{link}"
     end
 
     # TODO: Include link with amount

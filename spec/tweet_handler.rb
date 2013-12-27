@@ -150,7 +150,7 @@ describe Tweet::Handler, :vcr do
         handler.check_validity
         handler.reply_build
         expect(handler.valid).to eq(false)
-        expect(handler.reply).to include("mining", "fees")
+        expect(handler.reply).to include("miner", "fees")
       end
 
       it "should, if general tweet, build the error message" do
@@ -164,6 +164,19 @@ describe Tweet::Handler, :vcr do
         handler.reply_build
         expect(handler.valid).to eq(false)
         expect(handler.reply).to include("sorry", "meant")
+      end
+
+      it "should, if forget symbol, build a generic error message" do
+        content = "@pmarreck Tip 0.0019 @tippercoin"
+        handler = Tweet::Handler.new(
+          content: content,
+          sender: sender,
+          status_id: status_id)
+
+        handler.check_validity
+        handler.reply_build
+        expect(handler.valid).to eq(false)
+        expect(handler.reply).to include("forget", "BTC")
       end
 
       it "should, otherwise, build a generic error message" do

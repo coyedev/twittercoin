@@ -1,3 +1,5 @@
+require 'csv'
+
 class Tweet::Parser
 
   attr_accessor :content, :sender, :info, :mentions, :amount,
@@ -27,6 +29,11 @@ class Tweet::Parser
     return false if @sender == BOT
 
     return true
+  end
+
+  def likely_forgot_symbol?
+    number_exists = @content =~ /\s\d?+.?\d+/ ? true : false
+    !valid? && number_exists
   end
 
   def direct_tweet?
