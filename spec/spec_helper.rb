@@ -8,7 +8,7 @@ require 'vcr'
 
 VCR.configure do |c|
   c.cassette_library_dir = Rails.root.join("spec", "vcr")
-  c.hook_into :webmock	
+  c.hook_into :webmock
   c.allow_http_connections_when_no_cassette = true
 end
 
@@ -51,11 +51,6 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.treat_symbols_as_metadata_keys_with_true_values = true
-
-  # Hack, for example Gox data
-  config.around(:each, :vcr_gox) do |example|
-    VCR.use_cassette("latest") { example.call }
-  end
 
   # Normal VCR Naming
   config.around(:each, :vcr) do |example|

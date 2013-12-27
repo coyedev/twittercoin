@@ -7,7 +7,6 @@ module Tweet::Runner
     return if sender =~ /tippercoin/i
     return ap "Retweet ... " if content =~ RETWEET
 
-
     ap 'handling ...'
     handler = Tweet::Handler.new(
       content: content,
@@ -39,4 +38,3 @@ module Tweet::Runner
   end
 
 end
-

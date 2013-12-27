@@ -18,7 +18,7 @@ module Tweet::Message
     extend self
 
     def unauthenticated(sender)
-      link = "tippercoin.com/auth/twitter?r=#{rand}"
+      link = "www.tippercoin.com/auth/twitter?r=#{rand}"
       "@#{sender}, to start tipping, please authenticate via twitter "\
       "and make a deposit. Thanks! #{link}"
     end
@@ -26,32 +26,32 @@ module Tweet::Message
     def not_enough_balance(sender)
       # TODO: Include link with amount
 
-      link = "tippercoin.com/auth/twitter?r=#{rand}"
+      link = "www.tippercoin.com/auth/twitter?r=#{rand}"
       "@#{sender}, please top up on your account before sending this tip. #{link}"
     end
 
     def enough_confirmed_unspents(sender)
-      link = "tippercoin.com/#/account/deposit?r=#{rand}"
+      link = "www.tippercoin.com/#/account/deposit?r=#{rand}"
       "@#{sender}, you don't have enough confirmed unspents, pls wait for a few mins! #{link}"
     end
 
     def negative_amount(sender)
-      link = "tippercoin.com/#/documentation?r=#{rand}"
+      link = "www.tippercoin.com/#/documentation?r=#{rand}"
       "@#{sender}, You can't send negative amounts! #{link}"
     end
 
     def zero_amount(sender)
-      link = "tippercoin.com/#/how-it-works?r=#{rand}"
+      link = "www.tippercoin.com/#/how-it-works?r=#{rand}"
       "@#{sender}, please tip 0.001 BTC or more. Refer to #{link}"
     end
 
     def direct_tweet(sender)
-      link = "tippercoin.com/#/how-it-works?r=#{rand}"
+      link = "www.tippercoin.com/#/how-it-works?r=#{rand}"
       "@#{sender}, please try tipping someone else. Refer to #{link}"
     end
 
     def unknown(sender)
-      link = "tippercoin.com/#/how-it-works?r=#{rand}"
+      link = "www.tippercoin.com/#/how-it-works?r=#{rand}"
       "@#{sender}, sorry, I'm not sure what you meant :s. Please refer to #{link}"
     end
 

@@ -3,8 +3,11 @@ require 'spec_helper'
 describe Tweet::Parser do
   let(:sender) { "sender" }
 
-  # See vcr/latest.yml for 'cached' api calls
   let(:btc_usd) { 695.0 }
+
+  before(:each) do
+    Mtgox.stub(:latest).and_return(695.0)
+  end
 
   context "Basic: " do
 
@@ -104,6 +107,7 @@ describe Tweet::Parser do
     let(:beer) { 4 }
     let(:internet) { 1.337 }
 
+
     it "should extract/convert BTC to SATOSHIS" do
       content1 = "@recipient, really good article, keep it up! Here's a tip 0.041 BTC @tippercoin"
       # value = 0.041 * 100_000_000
@@ -128,7 +132,7 @@ describe Tweet::Parser do
       expect(t.info[:amount]).to eq(500_000)
     end
 
-    it "should extract/convert USD to SATOSHIS", :vcr_gox do
+    it "should extract/convert USD to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 USD @tippercoin"
 
       satoshis = ((5 / btc_usd) * SATOSHIS).to_i
@@ -136,7 +140,7 @@ describe Tweet::Parser do
       expect(t.info[:amount]).to eq(satoshis)
     end
 
-    it "should extract/convert dollars to SATOSHIS", :vcr_gox do
+    it "should extract/convert dollars to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 dollars @tippercoin"
 
       satoshis = ((5 / btc_usd) * SATOSHIS).to_i
@@ -144,7 +148,7 @@ describe Tweet::Parser do
       expect(t.info[:amount]).to eq(satoshis)
     end
 
-    it "should extract/convert beers to SATOSHIS", :vcr_gox do
+    it "should extract/convert beers to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 2 beers @tippercoin"
 
       satoshis = (((2 * beer) / btc_usd) * SATOSHIS).to_i
@@ -152,7 +156,7 @@ describe Tweet::Parser do
       expect(t.info[:amount]).to eq(satoshis)
     end
 
-    it "should extract/convert internets to SATOSHIS", :vcr_gox do
+    it "should extract/convert internets to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 internets @tippercoin"
 
       satoshis = (((5 * internet) / btc_usd) * SATOSHIS).to_i
@@ -171,8 +175,8 @@ describe Tweet::Parser do
       expect(t2.info[:amount]).to eq(4_100_000)
     end
 
-    it "should prefer suffix btc/BTC if multiple currency symbols", :vcr_gox do
-      content = "@recipient, really good article, keep it up! Here's a tip $0.01 BTC @tippercoin"
+    it "should prefer suffix btc/BTC if multiple currency symbols" do
+      content = "@recipient, really good article, keep it up! Here's a tip $ 0.01 BTC @tippercoin"
 
       t = Tweet::Parser.new(content, sender)
       expect(t.info[:amount]).to eq(1_000_000)
@@ -191,7 +195,7 @@ describe Tweet::Parser do
       expect(t2.info[:amount]).to eq(200_000_000)
     end
 
-    it "should extract/convert $ to SATOSHIS", :vcr_gox do
+    it "should extract/convert $ to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip $ 3 @tippercoin"
 
       satoshis = ((3  / btc_usd) * SATOSHIS).to_i
@@ -209,7 +213,7 @@ describe Tweet::Parser do
       expect(t2.info[:amount]).to eq(800_000)
     end
 
-    it "should prefer prefix btc/BTC over other multiple currency symbols", :vcr_gox do
+    it "should prefer prefix btc/BTC over other multiple currency symbols" do
       content = "@recipient, really good article, keep it up! Here's a tip BTC 0.01 USD @tippercoin"
 
       t = Tweet::Parser.new(content, sender)
@@ -221,7 +225,6 @@ describe Tweet::Parser do
 
   context "screen_name contains number" do
 
-
     contents = [
       "@person123 1 beer #tippercoin",
       "@person123 1 usd #tippercoin",
@@ -231,10 +234,9 @@ describe Tweet::Parser do
     ]
 
     contents.each_with_index do |c, index|
-      it "#{index}" do
+      it "content: #{index}" do
         t = Tweet::Parser.new(c, "sender")
-        ap t
-        # Should be take 123 and try to satoshify that
+        # TODO: expect(t.info[:amount]).to eq(something)
         expect(t.info[:amount]).to_not eq(nil)
       end
     end
@@ -248,12 +250,16 @@ describe 'Tweet::Parser Bulk Check' do
   let(:satoshis) { 1_000_000}
   let(:sender) { "sender" }
 
+  before(:each) do
+    Mtgox.stub(:latest).and_return(695.0)
+  end
+
   # Make sure contents are parsed regardless of spacing between prefix/prefix
   context "Spacing" do
     TWEETS = File.open("spec/tweet_examples/tweets_spacing").read.split("\n").compact
 
     TWEETS.each_with_index do |content, index|
-      it "line num: #{index}", :vcr_gox do
+      it "line num: #{index}" do
         t = Tweet::Parser.new(content, sender)
         expect(t.info[:amount]).to eq(satoshis)
       end
