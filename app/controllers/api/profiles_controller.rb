@@ -14,8 +14,15 @@ class Api::ProfilesController < ActionController::Base
     @tips = @user.all_tips.map do |tip|
 
       # Cached
-      sender = TipperClient.search_user(tip.sender.screen_name)
-      recipient = TipperClient.search_user(tip.recipient.screen_name)
+      begin
+        sender = TipperClient.search_user(tip.sender.screen_name)
+        recipient = TipperClient.search_user(tip.recipient.screen_name)
+
+      rescue Exception => e
+        ap e.inspect
+        ap e.backtrace
+        next
+      end
 
       # Count tips
       giving = tip.sender.screen_name == @user.screen_name
@@ -53,7 +60,7 @@ class Api::ProfilesController < ActionController::Base
         amount: tip.satoshis / SATOSHIS.to_f,
         other: other
       }
-    end
+    end.compact
 
     @profile = {
       screenName: @twitter_user[:screenName],
