@@ -170,6 +170,21 @@ describe Tweet::Parser do
       expect(t2.satoshis).to eq(satoshis2)
     end
 
+    it "should extract/convert beers to SATOSHIS" do
+      shatner = 0.001701
+
+      content1 = "@recipient, nice job. Here's 1 shatner @tippercoin"
+      satoshis = (shatner * SATOSHIS).to_i
+      t1 = Tweet::Parser.new(content1, sender)
+      expect(t1.satoshis).to eq(satoshis)
+
+      content2 = "@recipient! 2 shatners #tippercoin"
+
+      satoshis2 = (2 * shatner * SATOSHIS).to_i
+      t2 = Tweet::Parser.new(content2, sender)
+      expect(t2.satoshis).to eq(satoshis2)
+    end
+
     it "should extract/convert internets to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 internets @tippercoin"
 

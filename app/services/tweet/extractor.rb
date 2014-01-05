@@ -72,6 +72,11 @@ module Tweet::Extractor
         name: :internet,
         regex: /\s(\d*.?\d*)\s?internet/i,
         satoshify: Proc.new {|n| (n.to_f * 1.337 / Mtgox.latest * SATOSHIS).to_i }
+      },
+      {
+        name: :shatner,
+        regex: /\s(\d*.?\d*)\s?shatner/i,
+        satoshify: Proc.new {|n| (n.to_f * 0.001701 * SATOSHIS).to_i}
       }
     ]
 

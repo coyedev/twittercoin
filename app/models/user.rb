@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   end
 
   def self.create_profile(screen_name)
+    return if screen_name.nil?
     user = User.find_or_create_by(screen_name: screen_name)
     user.slug ||= SecureRandom.hex(8)
 
