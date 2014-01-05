@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   end
 
   def self.find_profile(screen_name)
-    user = User.find_by("screen_name ILIKE ?", "%#{screen_name}%")
+    user = User.find_by("screen_name ILIKE ?", screen_name)
     return if user.blank?
     return if user.addresses.blank?
     return user
