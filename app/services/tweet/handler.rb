@@ -23,7 +23,7 @@ class Tweet::Handler
       content: @content,
       screen_name: @sender,
       api_tweet_id_str: @status_id,
-      recipient_id: @recipient_user.id
+      recipient_id: @recipient_user.try(:id)
     })
 
     @tweet_tip.save
