@@ -13,7 +13,7 @@ module Pending
 
         senders = unclaimed.map {|u| u.sender }
         # senders_names = senders.map {|s| s.screen_name}
-        senders_amount = unclaimed.sum(:satoshis) / SATOSHIS.to_f
+        senders_amount = unclaimed.sum(:satoshis).to_BTCFloat
 
         message = Tweet::Message::Pending.reminder(
           recipient.screen_name,

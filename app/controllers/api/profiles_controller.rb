@@ -57,7 +57,7 @@ class Api::ProfilesController < ActionController::Base
         txDirection:  giving ? "primary" : "success",
         txHash: tip.tx_hash,
         tweetLink: tip.build_link,
-        amount: tip.satoshis / SATOSHIS.to_f,
+        amount: tip.satoshis.to_BTCFloat,
         other: other
       }
     end.compact
@@ -68,8 +68,8 @@ class Api::ProfilesController < ActionController::Base
       avatarLarge: @twitter_user[:avatarLarge],
       uid: @user.uid,
       authenticated: @user.authenticated,
-      totalTipsGiven: total_satoshis_given / SATOSHIS.to_f,
-      totalTipsReceived: total_satoshis_received / SATOSHIS.to_f,
+      totalTipsGiven: total_satoshis_given.to_BTCFloat,
+      totalTipsReceived: total_satoshis_received.to_BTCFloat,
       address: @user.addresses.first.address,
       tips: @tips
     }

@@ -9,7 +9,6 @@ class Api::AccountController < ActionController::Base
   def withdraw
     ap params
 
-    raise Debug
     amount = params[:withdrawAmount].to_satoshi
     to_address = params[:toAddress]
 
@@ -32,11 +31,11 @@ class Api::AccountController < ActionController::Base
     return unless session[:slug]
 
     @user = User.find_by(slug: session[:slug])
-    @balance = (@user.get_balance / SATOSHIS.to_f).round(8)
+    @balance = @user.get_balance.to_BTCFloat
     @account = {
       messages: {
         welcome: true,
-        deposit: @balance < MINIMUM_DEPOSIT / SATOSHIS.to_f,
+        deposit: @balance < MINIMUM_DEPOSIT.to_BTCFloat,
         withdraw: {
           default: true,
           success: false,
@@ -44,7 +43,7 @@ class Api::AccountController < ActionController::Base
         }
       },
       deposit: {
-        amount: MINIMUM_DEPOSIT / SATOSHIS.to_f
+        amount: MINIMUM_DEPOSIT.to_BTCFloat
       },
       screenName: @user.screen_name,
       address: @user.addresses.last.address,
