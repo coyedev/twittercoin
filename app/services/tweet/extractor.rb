@@ -21,62 +21,67 @@ module Tweet::Extractor
       {
         name: :mBTC_SUFFIX,
         regex: /\s(\d*.?\d*)\s?mBTC/i,
-        satoshify: Proc.new {|n| (n.to_f * SATOSHIS / MILLIBIT).to_i }
+        satoshify: Proc.new {|nStr| nStr.to_millibit_satoshis }
       },
       {
         name: :mBTC_PREFIX,
         regex: /mBTC\s?(\d*.?\d*)/i,
-        satoshify: Proc.new {|n| (n.to_f * SATOSHIS / MILLIBIT).to_i }
+        satoshify: Proc.new {|nStr| nStr.to_millibit_satoshis }
       },
       {
         name: :BTC_SUFFIX,
         regex: /\s(\d*.?\d*)\s?BTC/i,
-        satoshify: Proc.new {|n| (n.to_f * SATOSHIS).to_i}
+        satoshify: Proc.new {|nStr| nStr.to_satoshis }
       },
       {
         name: :bitcoin_SUFFIX,
         regex: /\s(\d*.?\d*)\s?bitcoin/i,
-        satoshify: Proc.new {|n| (n.to_f * SATOSHIS).to_i}
+        satoshify: Proc.new {|nStr| nStr.to_satoshis }
       },
       {
         name: :BTC_SIGN,
         regex: /฿\s?(\d*.?\d*)/i,
-        satoshify: Proc.new {|n| (n.to_f * SATOSHIS).to_i}
+        satoshify: Proc.new {|nStr| nStr.to_satoshis }
       },
       {
         name: :BTC_PREFIX,
         regex: /BTC\s?(\d*.?\d*)/i,
-        satoshify: Proc.new {|n| (n.to_f * SATOSHIS).to_i}
+        satoshify: Proc.new {|nStr| nStr.to_satoshis }
       },
       {
         name: :USD,
         regex: /\s(\d*.?\d*)\s?USD/i,
-        satoshify: Proc.new {|n| (n.to_f / Mtgox.latest * SATOSHIS).to_i }
+        satoshify: Proc.new {|nStr| (nStr.to_f / Mtgox.latest).to_satoshis }
       },
       {
         name: :dollar,
         regex: /\s(\d*.?\d*)\s?dollar/i,
-        satoshify: Proc.new {|n| (n.to_f / Mtgox.latest * SATOSHIS).to_i }
+        satoshify: Proc.new {|nStr| (nStr.to_f / Mtgox.latest).to_satoshis }
       },
       {
         name: :USD_SIGN,
         regex: /\$\s?(\d*.?\d*)/i,
-        satoshify: Proc.new {|n| (n.to_f / Mtgox.latest * SATOSHIS).to_i }
+        satoshify: Proc.new {|nStr| (nStr.to_f / Mtgox.latest).to_satoshis }
       },
       {
         name: :beer,
         regex: /\s(\d*.?\d*)\s?beer/i,
-        satoshify: Proc.new {|n| (n.to_f * 4 / Mtgox.latest * SATOSHIS).to_i }
+        satoshify: Proc.new {|nStr| (nStr.to_f * 4 / Mtgox.latest).to_satoshis }
+      },
+      {
+        name: :coffee,
+        regex: /\s(\d*.?\d*)\s?coffee/i,
+        satoshify: Proc.new {|nStr| (nStr.to_f * 3 / Mtgox.latest).to_satoshis }
       },
       {
         name: :internet,
         regex: /\s(\d*.?\d*)\s?internet/i,
-        satoshify: Proc.new {|n| (n.to_f * 1.337 / Mtgox.latest * SATOSHIS).to_i }
+        satoshify: Proc.new {|nStr| (nStr.to_f * 0.001337).to_satoshis }
       },
       {
         name: :shatner,
         regex: /\s(\d*.?\d*)\s?shatner/i,
-        satoshify: Proc.new {|n| (n.to_f * 0.001701 * SATOSHIS).to_i}
+        satoshify: Proc.new {|nStr| (nStr.to_f * 0.001701).to_satoshis}
       }
     ]
 

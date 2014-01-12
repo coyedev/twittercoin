@@ -111,9 +111,6 @@ describe Tweet::Parser do
 
   context "Suffix Symbols: " do
 
-    let(:beer) { 4 }
-    let(:internet) { 1.337 }
-
 
     it "should extract/convert BTC to SATOSHIS" do
       content1 = "@recipient, really good article, keep it up! Here's a tip 0.041 BTC @tippercoin"
@@ -142,7 +139,7 @@ describe Tweet::Parser do
     it "should extract/convert USD to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 USD @tippercoin"
 
-      satoshis = ((5 / btc_usd) * SATOSHIS).to_i
+      satoshis = ((5 / btc_usd) * SATOSHIS).round.to_i
       t = Tweet::Parser.new(content, sender)
       expect(t.satoshis).to eq(satoshis)
     end
@@ -150,47 +147,72 @@ describe Tweet::Parser do
     it "should extract/convert dollars to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip 5 dollars @tippercoin"
 
-      satoshis = ((5 / btc_usd) * SATOSHIS).to_i
+      satoshis = ((5 / btc_usd) * SATOSHIS).round.to_i
       t = Tweet::Parser.new(content, sender)
       expect(t.satoshis).to eq(satoshis)
     end
 
 
     it "should extract/convert beers to SATOSHIS" do
+      beer = 4
+
       content1 = "@recipient, really good article, keep it up! Here's a tip 2 beers @tippercoin"
 
-      satoshis = (((2 * beer) / btc_usd) * SATOSHIS).to_i
+      satoshis = (((2 * beer) / btc_usd) * SATOSHIS).round.to_i
       t1 = Tweet::Parser.new(content1, sender)
       expect(t1.satoshis).to eq(satoshis)
 
       content2 = "@recipient good work on the app, buy a beer! 1 Beer #tippercoin"
 
-      satoshis2 = (((1 * beer) / btc_usd) * SATOSHIS).to_i
+      satoshis2 = (((1 * beer) / btc_usd) * SATOSHIS).round.to_i
       t2 = Tweet::Parser.new(content2, sender)
       expect(t2.satoshis).to eq(satoshis2)
     end
 
-    it "should extract/convert beers to SATOSHIS" do
+    it "should extract/convert coffees to SATOSHIS" do
+      coffee = 3
+
+      content1 = "@recipient, really good article, keep it up! Here's a tip 2 coffees @tippercoin"
+
+      satoshis = (((2 * coffee) / btc_usd) * SATOSHIS).round.to_i
+      t1 = Tweet::Parser.new(content1, sender)
+      expect(t1.satoshis).to eq(satoshis)
+
+      content2 = "@recipient good work on the app, buy 1 coffee on me #tippercoin"
+
+      satoshis2 = (((1 * coffee) / btc_usd) * SATOSHIS).round.to_i
+      t2 = Tweet::Parser.new(content2, sender)
+      expect(t2.satoshis).to eq(satoshis2)
+    end
+
+    it "should extract/convert shatners to SATOSHIS" do
       shatner = 0.001701
 
       content1 = "@recipient, nice job. Here's 1 shatner @tippercoin"
-      satoshis = (shatner * SATOSHIS).to_i
+      satoshis = (shatner * SATOSHIS).round.to_i
       t1 = Tweet::Parser.new(content1, sender)
       expect(t1.satoshis).to eq(satoshis)
 
       content2 = "@recipient! 2 shatners #tippercoin"
 
-      satoshis2 = (2 * shatner * SATOSHIS).to_i
+      satoshis2 = (2 * shatner * SATOSHIS).round.to_i
       t2 = Tweet::Parser.new(content2, sender)
       expect(t2.satoshis).to eq(satoshis2)
     end
 
     it "should extract/convert internets to SATOSHIS" do
-      content = "@recipient, really good article, keep it up! Here's a tip 5 internets @tippercoin"
+      internet = 0.001337
 
-      satoshis = (((5 * internet) / btc_usd) * SATOSHIS).to_i
-      t = Tweet::Parser.new(content, sender)
-      expect(t.satoshis).to eq(satoshis)
+      content1 = "@recipient, nice job. Here's 1 internet @tippercoin"
+      satoshis = (internet * SATOSHIS).round.to_i
+      t1 = Tweet::Parser.new(content1, sender)
+      expect(t1.satoshis).to eq(satoshis)
+
+      content2 = "@recipient! 2 internets #tippercoin"
+
+      satoshis2 = (2 * internet * SATOSHIS).round.to_i
+      t2 = Tweet::Parser.new(content2, sender)
+      expect(t2.satoshis).to eq(satoshis2)
     end
 
     it "should extract both upper/lowercases of suffix symbols" do
@@ -227,7 +249,7 @@ describe Tweet::Parser do
     it "should extract/convert $ to SATOSHIS" do
       content = "@recipient, really good article, keep it up! Here's a tip $ 3 @tippercoin"
 
-      satoshis = ((3  / btc_usd) * SATOSHIS).to_i
+      satoshis = ((3  / btc_usd) * SATOSHIS).round.to_i
       t = Tweet::Parser.new(content, sender)
       expect(t.satoshis).to eq(satoshis)
     end
