@@ -9,19 +9,31 @@ class Api::AccountController < ActionController::Base
   def withdraw
     ap params
 
-    amount = params[:withdrawAmount].to_satoshis
-    to_address = params[:toAddress]
+    begin
 
-    result = @user.withdraw(amount, to_address)
+      amount = params[:withdrawAmount].to_satoshis
+      to_address = params[:toAddress]
 
-    @account[:balance] = (@account[:balance] - ((amount + FEE).to_BTCStr)).round(8)
-    @account[:messages][:withdraw] = {
-      default: false,
-      success: true,
-      error: false
-    }
+      result = @user.withdraw(amount, to_address)
 
-    render json: @account
+      @account[:balance] = (@account[:balance] - ((amount + FEE).to_BTCFloat)).to_s
+      @account[:messages][:withdraw] = {
+        default: false,
+        success: true,
+        error: false
+      }
+
+      render json: @account
+
+    rescue Exception => e
+      ap e.inspect
+      ap e.backtrace
+
+      raise CriticalError.new("Error in withdrawl: #{e.inspect}", {
+        inspect: e.inspect,
+        backtrace: e.backtrace
+      })
+    end
   end
 
   protected
