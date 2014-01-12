@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131220014726) do
+ActiveRecord::Schema.define(version: 20140112015808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20131220014726) do
     t.string   "tx_hash"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "tx_hash_refund"
   end
 
   add_index "tweet_tips", ["content"], name: "index_tweet_tips_on_content", using: :btree
@@ -48,6 +49,7 @@ ActiveRecord::Schema.define(version: 20131220014726) do
     t.string   "slug"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "reminded_at"
   end
 
   add_index "users", ["screen_name"], name: "index_users_on_screen_name", using: :btree

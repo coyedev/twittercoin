@@ -8,8 +8,23 @@ class User < ActiveRecord::Base
 
   validates :screen_name, uniqueness: { case_sensitive: false }, presence: true
 
+  def self.unauthenticated
+    self.where(authenticated: false)
+  end
+
+  def self.unauthenticated_with_tips
+    # TODO: remove n + 1 triggered by valid/count
+    self.unauthenticated.select do |u|
+      u.tips_received.is_valid.count > 0
+    end
+  end
+
+  def reminded_recently(less_than: 3.days)
+    self.reminded_at && self.reminded_at > less_than.ago
+  end
+
   def all_tips
-    (self.tips_received.valid + self.tips_given.valid).sort_by { |t| t.created_at }.reverse
+    (self.tips_received.is_valid + self.tips_given.is_valid).sort_by { |t| t.created_at }.reverse
   end
 
   def self.find_profile(screen_name)
