@@ -31,7 +31,7 @@ class Api::ProfilesController < ActionController::Base
 
       # Other
       t = Tweet::Parser.new(tip.content, tip.screen_name)
-      other = if [:beer, :internet, :shatner].include?(t.symbol)
+      other = if [:beer, :coffee, :internet, :shatner].include?(t.symbol)
         {
           presence: true,
           units: t.units,
