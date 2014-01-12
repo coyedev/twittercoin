@@ -65,7 +65,7 @@
 						<th></th>
 						<th>TO</th>
 						<th>AMOUNT</th>
-						<th>TWEET</th>
+						<th class='hidden-xs'>TWEET</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -75,7 +75,7 @@
 							<a class='no-decorate' href="#/profile/{{tip.sender.screenName}}">
 								<p class="lead">
 									<img ng-src="{{tip.sender.avatarSmall}}">
-									<span class="label label-{{tip.sender.css}} label-large square">
+									<span class="label label-{{tip.sender.css}} label-large square hidden-xs">
 										@{{tip.sender.screenName}}
 									</span>
 								</p>
@@ -92,7 +92,7 @@
 							<a class='no-decorate' href="#/profile/{{tip.recipient.screenName}}">
 								<p class="lead">
 									<img ng-src="{{tip.recipient.avatarSmall}}">
-									<span class="label label-{{tip.recipient.css}} label-thin label-large square">
+									<span class="label label-{{tip.recipient.css}} label-thin label-large square hidden-xs">
 										@{{tip.recipient.screenName}}
 									</span>
 								</p>
@@ -107,7 +107,7 @@
 								</span>
 							</p>
 						</td>
-						<td>
+						<td class='hidden-xs'>
 							<a class='text-muted' href="{{tip.tweetLink}}">
 								<p class="lead twitter-button">
 									<i class="fa fa-twitter"></i>

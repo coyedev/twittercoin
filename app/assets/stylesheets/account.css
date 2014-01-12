@@ -23,6 +23,7 @@
 
 .unique-address {
 	margin-top: 100px;
+	word-wrap: break-word;
 }
 
 .form-horizontal input {
@@ -33,4 +34,9 @@
 
 .text-white {
 	color: #fff;
+}
+
+#qrcode img {
+	margin: 0 auto;
+	/*text-align: center;*/
 }
