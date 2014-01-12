@@ -9,7 +9,7 @@ class Api::AccountController < ActionController::Base
   def withdraw
     ap params
 
-    amount = params[:withdrawAmount].to_satoshi
+    amount = params[:withdrawAmount].to_satoshis
     to_address = params[:toAddress]
 
     result = @user.withdraw(amount, to_address)
