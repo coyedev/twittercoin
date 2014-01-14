@@ -1,5 +1,4 @@
-=== TwitterCoin Application
+# TwitterCoin for Coinyecoin
 
-Send Bitcoins over Twitter.
+A clone of the bitcoin Twitter tipbot.  Made for use with coinyecoins
 
-www.tippercoin.com/#/how-it-works
